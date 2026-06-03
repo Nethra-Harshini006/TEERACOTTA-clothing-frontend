@@ -5,7 +5,7 @@ import '../styles/login.css';
 import '../styles/signup.css';
 
 export default function Signup() {
-  const { signup } = useAuth();
+  const { signup, signInWithDemo, signInWithGoogle } = useAuth();
   const navigate   = useNavigate();
   const [form, setForm]     = useState({ firstName: '', lastName: '', email: '', password: '', confirm: '', terms: false });
   const [error, setError]   = useState('');
@@ -18,19 +18,30 @@ export default function Signup() {
     setError('');
   };
 
+  const runAuthAction = async (action) => {
+    setError('');
+    setLoading(true);
+    const result = await action();
+    setLoading(false);
+    if (result.ok) navigate('/');
+    else setError(result.error);
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     if (form.password !== form.confirm) { setError('Passwords do not match.'); return; }
     if (form.password.length < 8)       { setError('Password must be at least 8 characters.'); return; }
     if (!form.terms)                    { setError('Please accept the terms and conditions.'); return; }
-    setLoading(true);
-    setTimeout(() => {
-      const result = signup({ firstName: form.firstName, lastName: form.lastName, email: form.email, password: form.password });
-      setLoading(false);
-      if (result.ok) navigate('/');
-      else setError(result.error);
-    }, 600);
+    runAuthAction(() => signup({
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      password: form.password,
+    }));
   };
+
+  const handleDemoLogin = () => runAuthAction(signInWithDemo);
+  const handleGoogleSignUp = () => runAuthAction(signInWithGoogle);
 
   return (
     <div className="auth-page">
@@ -113,8 +124,15 @@ export default function Signup() {
               </button>
             </form>
 
+            <div className="demo-login-section">
+              <p className="demo-text">Want to try without creating an account?</p>
+              <button type="button" onClick={handleDemoLogin} className="demo-btn" disabled={loading}>
+                {loading ? <span className="auth-spinner" /> : '🚀 Try Demo Account'}
+              </button>
+            </div>
+
             <div className="auth-divider">or sign up with</div>
-            <button className="google-btn">
+            <button type="button" className="google-btn" onClick={handleGoogleSignUp} disabled={loading}>
               <svg className="google-icon" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>

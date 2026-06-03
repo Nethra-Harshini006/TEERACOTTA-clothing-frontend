@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ProductCardImage } from './ProductImage';
 import '../styles/productcard.css';
 
 function Stars({ rating }) {
@@ -43,7 +44,7 @@ export default function ProductCard({ product, onAddToCart, onToggleWishlist, is
   return (
     <div className="product-card" onClick={handleCardClick}>
       <div className="product-img-wrap">
-        <img src={product.image} alt={product.name} loading="lazy" />
+        <ProductCardImage product={product} alt={product.name} />
 
         <div className="product-badge-wrap">
           {product.badge && (

@@ -1,6 +1,10 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import Hero from '../components/Hero';
 import ProductCard from '../components/ProductCard';
+import { subscriptionsAPI } from '../services/api';
+import { getRecipientEmail } from '../utils/userEmail';
 import products from '../data/products';
 import '../styles/home.css';
 
@@ -37,6 +41,25 @@ const testimonials = [
 ];
 
 export default function Home({ onAddToCart, onToggleWishlist, wishlist }) {
+  const { user } = useAuth();
+  const [newsletterEmail, setNewsletterEmail] = useState(user?.email || '');
+  const [newsletterDone, setNewsletterDone] = useState(false);
+
+  useEffect(() => {
+    if (user?.email) setNewsletterEmail(user.email);
+  }, [user]);
+
+  const handleNewsletter = async () => {
+    const subscriberEmail = getRecipientEmail(user, newsletterEmail);
+    if (!subscriberEmail) return;
+    try {
+      await subscriptionsAPI.subscribe(subscriberEmail);
+      setNewsletterDone(true);
+    } catch (err) {
+      console.error('Subscribe failed:', err.message);
+    }
+  };
+
   const trending    = products.filter(p => p.badge === 'Trending' || p.badge === 'Bestseller').slice(0, 4);
   const newArrivals = products.filter(p => p.badge === 'New').slice(0, 4);
 
@@ -193,8 +216,21 @@ export default function Home({ onAddToCart, onToggleWishlist, wishlist }) {
               Subscribe to our newsletter and be the first to know about new collections, exclusive deals, and style tips.
             </p>
             <div className="newsletter-form">
-              <input type="email" placeholder="Enter your email address..." />
-              <button type="button">Subscribe</button>
+              {newsletterDone ? (
+                <p className="newsletter-sub" style={{ margin: 0 }}>✓ You&apos;re subscribed!</p>
+              ) : (
+                <>
+                  <input
+                    type="email"
+                    placeholder="Enter your email address..."
+                    value={newsletterEmail}
+                    onChange={e => setNewsletterEmail(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handleNewsletter()}
+                    readOnly={!!user}
+                  />
+                  <button type="button" onClick={handleNewsletter}>Subscribe</button>
+                </>
+              )}
             </div>
           </div>
         </div>

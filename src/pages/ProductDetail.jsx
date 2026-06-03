@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import products from '../data/products';
+import { ProductMainImage, ProductCardImage } from '../components/ProductImage';
 import '../styles/productdetail.css';
 
 function Stars({ rating, size = 'normal' }) {
@@ -13,42 +14,6 @@ function Stars({ rating, size = 'normal' }) {
           <span key={i} className={`star${filled ? ' filled' : half ? ' half' : ''}`}>★</span>
         );
       })}
-    </div>
-  );
-}
-
-function ImageGallery({ images, productName }) {
-  const [selectedImage, setSelectedImage] = useState(0);
-  const [isZoomed, setIsZoomed] = useState(false);
-
-  // Fallback to single image if images array doesn't exist
-  const imageList = images && images.length > 0 ? images : [images || 'https://via.placeholder.com/600x600'];
-
-  return (
-    <div className="image-gallery">
-      <div className="main-image-container">
-        <div 
-          className={`main-image ${isZoomed ? 'zoomed' : ''}`}
-          onClick={() => setIsZoomed(!isZoomed)}
-        >
-          <img src={imageList[selectedImage]} alt={`${productName} - View ${selectedImage + 1}`} />
-          <div className="zoom-hint">🔍 Click to zoom</div>
-        </div>
-      </div>
-      
-      {imageList.length > 1 && (
-        <div className="thumbnail-container">
-          {imageList.map((img, index) => (
-            <div 
-              key={index}
-              className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
-              onClick={() => setSelectedImage(index)}
-            >
-              <img src={img} alt={`${productName} - Thumbnail ${index + 1}`} />
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
@@ -200,7 +165,13 @@ export default function ProductDetail({ onAddToCart, onToggleWishlist, wishlist 
         {/* Product Details */}
         <div className="product-detail-grid">
           <div className="product-image-section">
-            <ImageGallery images={product.images || [product.image]} productName={product.name} />
+            <div className="image-gallery">
+              <div className="main-image-container">
+                <div className="main-image">
+                  <ProductMainImage key={product.id} product={product} alt={product.name} />
+                </div>
+              </div>
+            </div>
             {product.badge && (
               <span className={`product-badge ${product.badge.toLowerCase()}`}>
                 {product.badge}
@@ -340,8 +311,8 @@ export default function ProductDetail({ onAddToCart, onToggleWishlist, wishlist 
             <div className="related-products-grid">
               {relatedProducts.map(relatedProduct => (
                 <div key={relatedProduct.id} className="related-product-card">
-                  <img 
-                    src={relatedProduct.image} 
+                  <ProductCardImage
+                    product={relatedProduct}
                     alt={relatedProduct.name}
                     onClick={() => navigate(`/product/${relatedProduct.id}`)}
                   />

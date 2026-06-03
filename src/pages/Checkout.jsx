@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { emailAPI } from '../services/api';
+import { ordersAPI } from '../services/api';
 import '../styles/checkout.css';
 
 export default function Checkout({ cart, onClearCart }) {
@@ -110,47 +110,21 @@ export default function Checkout({ cart, onClearCart }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateStep(3)) return;
-    
+
     setIsProcessing(true);
-    
-    // Simulate payment processing
-    setTimeout(() => {
-      const orderId = Date.now();
-      const orderData = {
-        id: orderId,
+
+    try {
+      const { order } = await ordersAPI.create({
         items: cart,
         billing: formData,
         totals: { subtotal, shipping, tax, total },
-        date: new Date().toISOString(),
-        status: 'confirmed'
-      };
-      
-      // Send order confirmation email
-      const itemsForEmail = cart.map(item => ({
-        name: item.name,
-        price: item.price,
-        qty: item.qty
-      }));
-      
-      emailAPI.sendOrderEmail({
-        firstName: formData.firstName,
-        email: formData.email,
-        address: formData.address,
-        city: formData.city,
-        state: formData.state,
-        pincode: formData.pincode,
-        paymentMethod: formData.paymentMethod
-      }, itemsForEmail, { subtotal, shipping, tax, total }, orderId);
-      
-      // Store order in localStorage (in real app, send to backend)
-      localStorage.setItem('lastOrder', JSON.stringify(orderData));
-      
-      // Clear cart
-      onClearCart();
-      
-      // Navigate to confirmation
-      navigate('/order-confirmation');
-    }, 2000);
+      });
+      await onClearCart();
+      navigate('/order-confirmation', { state: { order } });
+    } catch (err) {
+      setErrors({ submit: err.message });
+      setIsProcessing(false);
+    }
   };
 
   const formatCardNumber = (value) => {

@@ -61,7 +61,7 @@ const products = [
       "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=80",
       "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80",
       "https://images.unsplash.com/photo-1594938298603-c8148c4b4357?w=600&q=80",
-      "https://images.unsplash.com/photo-1592225235118-6b4ee5f632e8?w=600&q=80"
+      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80"
     ],
     price: 5499, originalPrice: 6999, rating: 4.7, badge: "Trending",
     description: "Urban bomber jacket with premium satin lining and ribbed cuffs.",
@@ -374,11 +374,11 @@ const products = [
   },
   {
     id: 30, name: "Canvas Backpack", category: "Accessories", subCategory: "Bags",
-    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a45?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80",
     images: [
-      "https://images.unsplash.com/photo-1553062407-98eeb64c6a45?w=600&q=80",
-      "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=600&q=80",
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80",
       "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80",
+      "https://images.unsplash.com/photo-1591195853828-11db59a44f43?w=600&q=80",
       "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=80"
     ],
     price: 4499, originalPrice: 5999, rating: 4.5, badge: null,

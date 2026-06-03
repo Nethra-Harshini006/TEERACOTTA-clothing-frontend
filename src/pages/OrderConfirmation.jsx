@@ -1,22 +1,34 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { ordersAPI } from '../services/api';
 import '../styles/order-confirmation.css';
 
 export default function OrderConfirmation() {
   const [orderData, setOrderData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    const lastOrder = localStorage.getItem('lastOrder');
-    if (lastOrder) {
-      setOrderData(JSON.parse(lastOrder));
-    } else {
-      // If no order data, redirect to home
-      navigate('/');
-    }
-  }, [navigate]);
+    const loadOrder = async () => {
+      if (location.state?.order) {
+        setOrderData(location.state.order);
+        setLoading(false);
+        return;
+      }
+      try {
+        const { order } = await ordersAPI.latest();
+        setOrderData(order);
+      } catch {
+        navigate('/');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadOrder();
+  }, [location.state, navigate]);
 
-  if (!orderData) {
+  if (loading || !orderData) {
     return (
       <div className="order-confirmation-container">
         <div className="container">
@@ -26,8 +38,8 @@ export default function OrderConfirmation() {
     );
   }
 
-  const { id, items, billing, totals, date } = orderData;
-  const orderDate = new Date(date).toLocaleDateString('en-IN', {
+  const { orderNumber, items, billing, totals, date, createdAt } = orderData;
+  const orderDate = new Date(date || createdAt).toLocaleDateString('en-IN', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -45,7 +57,6 @@ export default function OrderConfirmation() {
     <div className="order-confirmation-container">
       <div className="container">
         <div className="confirmation-content">
-          {/* Success Header */}
           <div className="success-header">
             <div className="success-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -54,10 +65,9 @@ export default function OrderConfirmation() {
               </svg>
             </div>
             <h1>Order Confirmed!</h1>
-            <p>Thank you for your purchase. Your order has been successfully placed.</p>
+            <p>Thank you for your purchase. Your order has been saved to your account.</p>
           </div>
 
-          {/* Order Details */}
           <div className="order-details-section">
             <div className="order-info-grid">
               <div className="order-summary-card">
@@ -65,7 +75,7 @@ export default function OrderConfirmation() {
                 <div className="order-meta">
                   <div className="meta-item">
                     <span className="label">Order Number:</span>
-                    <span className="value">#{id}</span>
+                    <span className="value">{orderNumber}</span>
                   </div>
                   <div className="meta-item">
                     <span className="label">Order Date:</span>
@@ -85,7 +95,6 @@ export default function OrderConfirmation() {
                   </div>
                 </div>
 
-                {/* Order Items */}
                 <div className="order-items">
                   <h3>Items Ordered</h3>
                   {items.map(item => (
@@ -103,7 +112,6 @@ export default function OrderConfirmation() {
                   ))}
                 </div>
 
-                {/* Order Totals */}
                 <div className="order-totals">
                   <div className="total-row">
                     <span>Subtotal</span>
@@ -124,10 +132,8 @@ export default function OrderConfirmation() {
                 </div>
               </div>
 
-              {/* Shipping & Billing Info */}
               <div className="address-info-card">
                 <h2>Delivery Information</h2>
-                
                 <div className="address-section">
                   <h3>Shipping Address</h3>
                   <div className="address">
@@ -181,59 +187,28 @@ export default function OrderConfirmation() {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="confirmation-actions">
-            <Link to="/shop" className="btn-outline">
-              Continue Shopping
-            </Link>
-            <Link to="/account" className="btn-pink">
-              Track Order
-            </Link>
-            <button 
-              onClick={() => window.print()} 
-              className="btn-outline"
-            >
-              Print Receipt
-            </button>
+            <Link to="/shop" className="btn-outline">Continue Shopping</Link>
+            <Link to="/account" className="btn-pink">Track Order</Link>
+            <button onClick={() => window.print()} className="btn-outline">Print Receipt</button>
           </div>
 
-          {/* Additional Info */}
           <div className="additional-info">
             <div className="info-cards">
               <div className="info-card">
-                <div className="info-icon">📧</div>
-                <h3>Order Confirmation</h3>
-                <p>A confirmation email has been sent to {billing.email}</p>
+                <div className="info-icon">📦</div>
+                <h3>Order Saved</h3>
+                <p>View this order anytime from your account under My Orders</p>
               </div>
               <div className="info-card">
                 <div className="info-icon">📱</div>
                 <h3>Track Your Order</h3>
-                <p>You'll receive SMS updates about your order status</p>
+                <p>Check status updates on the account page</p>
               </div>
               <div className="info-card">
                 <div className="info-icon">🔄</div>
                 <h3>Easy Returns</h3>
                 <p>30-day return policy for all items</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Customer Support */}
-          <div className="support-section">
-            <h3>Need Help?</h3>
-            <p>If you have any questions about your order, please contact our customer support:</p>
-            <div className="support-contacts">
-              <div className="support-item">
-                <span className="support-icon">📞</span>
-                <span>Call: 1800-123-4567</span>
-              </div>
-              <div className="support-item">
-                <span className="support-icon">✉️</span>
-                <span>Email: support@terracotta.in</span>
-              </div>
-              <div className="support-item">
-                <span className="support-icon">💬</span>
-                <span>Live Chat: Available 24/7</span>
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { emailAPI } from '../services/api';
+import { contactAPI } from '../services/api';
 import '../styles/contact.css';
 
 const TOPICS = ['Order Issue', 'Return / Exchange', 'Product Question', 'Shipping Query', 'Partnership', 'Other'];
@@ -24,20 +24,19 @@ export default function Contact() {
     setErrors(er => ({ ...er, [e.target.name]: '' }));
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const e2 = validate();
     if (Object.keys(e2).length) { setErrors(e2); return; }
     setLoading(true);
-    
-    // Send email and store in localStorage
-    emailAPI.sendContactEmail(form.name, form.email, form.topic, form.message).then(emailResult => {
-      const messages = JSON.parse(localStorage.getItem('terracotta_messages') || '[]');
-      messages.push({ ...form, date: new Date().toISOString(), emailSent: emailResult.ok });
-      localStorage.setItem('terracotta_messages', JSON.stringify(messages));
-      setLoading(false);
+    try {
+      await contactAPI.submit(form);
       setSubmitted(true);
-    });
+    } catch (err) {
+      setErrors({ submit: err.message });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleReset = () => {

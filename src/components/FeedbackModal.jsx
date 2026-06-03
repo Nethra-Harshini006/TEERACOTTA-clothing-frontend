@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { emailAPI } from '../services/api';
+import { feedbackAPI } from '../services/api';
 import '../styles/feedback.css';
 
 const TOPICS = ['Product Quality', 'Delivery Speed', 'Website Experience', 'Customer Support', 'Pricing', 'Other'];
@@ -19,7 +19,7 @@ export default function FeedbackModal() {
 
   const handleClose = () => { setOpen(false); setTimeout(reset, 300); };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!rating) return setError('Please give a star rating.');
     if (!topic) return setError('Please select a topic.');
@@ -28,14 +28,19 @@ export default function FeedbackModal() {
     setError('');
 
     const feedbackName = name.trim() || 'Valued Customer';
-    
-    // Send feedback email
-    emailAPI.sendFeedbackEmail(feedbackName, email, rating, topic);
-    
-    const feedbacks = JSON.parse(localStorage.getItem('terracotta_feedbacks') || '[]');
-    feedbacks.push({ name: feedbackName, email, rating, topic, message: message.trim(), date: new Date().toISOString() });
-    localStorage.setItem('terracotta_feedbacks', JSON.stringify(feedbacks));
-    setStep(2);
+
+    try {
+      await feedbackAPI.submit({
+        name: feedbackName,
+        email,
+        rating,
+        topic,
+        message: message.trim(),
+      });
+      setStep(2);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (

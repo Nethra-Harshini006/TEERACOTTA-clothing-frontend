@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
-import { emailAPI } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import { subscriptionsAPI } from '../services/api';
+import { getRecipientEmail } from '../utils/userEmail';
 import '../styles/footer.css';
 
 const quickLinks = [
@@ -32,25 +33,30 @@ const companyLinks = [
 ];
 
 export default function Footer() {
-  const [email, setEmail] = useState('');
+  const { user } = useAuth();
+  const [email, setEmail] = useState(user?.email || '');
   const [subscribed, setSubscribed] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    if (user?.email) setEmail(user.email);
+  }, [user]);
 
   // Scroll to top whenever location changes
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
 
-  const handleSubscribe = () => {
-    if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) return;
-    
-    // Send newsletter confirmation email
-    emailAPI.sendNewsletterEmail(email);
-    
-    const subs = JSON.parse(localStorage.getItem('terracotta_subscribers') || '[]');
-    if (!subs.includes(email)) { subs.push(email); localStorage.setItem('terracotta_subscribers', JSON.stringify(subs)); }
-    setSubscribed(true);
-    setEmail('');
+  const handleSubscribe = async () => {
+    const subscriberEmail = getRecipientEmail(user, email);
+    if (!subscriberEmail) return;
+    try {
+      await subscriptionsAPI.subscribe(subscriberEmail);
+      setSubscribed(true);
+      if (!user) setEmail('');
+    } catch (err) {
+      console.error('Subscribe failed:', err.message);
+    }
   };
 
   return (
@@ -173,6 +179,7 @@ export default function Footer() {
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && handleSubscribe()}
+                      readOnly={!!user}
                     />
                     <button type="button" onClick={handleSubscribe}>Subscribe</button>
                   </>

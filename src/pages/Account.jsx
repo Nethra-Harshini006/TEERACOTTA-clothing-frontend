@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import products from '../data/products';
+import { ordersAPI } from '../services/api';
 import '../styles/account.css';
 
 const NAV_ITEMS = [
@@ -13,11 +13,20 @@ const NAV_ITEMS = [
   { id: 'profile',   label: 'Profile Settings', icon: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z' },
 ];
 
-const mockOrders = [
-  { id: '#ORD-2025-001', name: 'Floral Wrap Midi Dress', img: products[8].image,  price: 3999,  date: '12 Jan 2025', status: 'delivered' },
-  { id: '#ORD-2025-002', name: 'Air Cushion Runner Pro', img: products[16].image, price: 8999,  date: '28 Jan 2025', status: 'shipped' },
-  { id: '#ORD-2025-003', name: 'Swiss Automatic Watch',  img: products[32].image, price: 49999, date: '3 Feb 2025',  status: 'processing' },
-];
+function formatOrderRow(order) {
+  const first = order.items?.[0];
+  const extra = order.items?.length > 1 ? ` +${order.items.length - 1} more` : '';
+  return {
+    id: order.orderNumber,
+    name: first ? `${first.name}${extra}` : 'Order',
+    img: first?.image || '',
+    price: order.totals?.total || 0,
+    date: new Date(order.date || order.createdAt).toLocaleDateString('en-IN', {
+      day: 'numeric', month: 'short', year: 'numeric',
+    }),
+    status: order.status,
+  };
+}
 
 export default function Account() {
   const { user, logout, updateProfile } = useAuth();
@@ -32,8 +41,15 @@ export default function Account() {
     city:      user?.city      || 'Coimbatore',
   });
   const [saved, setSaved] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
 
-  // Show welcome message for new sessions
+  useEffect(() => {
+    ordersAPI.list()
+      .then(({ orders: list }) => setOrders(list.map(formatOrderRow)))
+      .catch(() => setOrders([]))
+      .finally(() => setOrdersLoading(false));
+  }, []);
   useEffect(() => {
     const lastLogin = localStorage.getItem(`lastLogin_${user?.id}`);
     const now = Date.now();
@@ -45,14 +61,18 @@ export default function Account() {
     }
   }, [user]);
 
+  const totalSpent = orders.reduce((sum, o) => sum + o.price, 0);
+
   const fmt = n => `₹${n.toLocaleString('en-IN')}`;
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
-  const handleSaveProfile = () => {
-    updateProfile(profile);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+  const handleSaveProfile = async () => {
+    const result = await updateProfile(profile);
+    if (result.ok) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    }
   };
 
   if (!user) {
@@ -143,15 +163,15 @@ export default function Account() {
                   </div>
                   <div className="account-stats">
                     <div className="account-stat">
-                      <div className="account-stat-num">3</div>
+                      <div className="account-stat-num">{orders.length}</div>
                       <div className="account-stat-label">Total Orders</div>
                     </div>
                     <div className="account-stat">
-                      <div className="account-stat-num">0</div>
+                      <div className="account-stat-num">—</div>
                       <div className="account-stat-label">Wishlist Items</div>
                     </div>
                     <div className="account-stat">
-                      <div className="account-stat-num">₹62K</div>
+                      <div className="account-stat-num">{orders.length ? fmt(totalSpent) : '₹0'}</div>
                       <div className="account-stat-label">Total Spent</div>
                     </div>
                   </div>
@@ -161,7 +181,11 @@ export default function Account() {
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/></svg>
                     Recent Orders
                   </div>
-                  {mockOrders.map(order => (
+                  {ordersLoading ? (
+                    <p style={{ color: 'var(--text-light)' }}>Loading orders...</p>
+                  ) : orders.length === 0 ? (
+                    <p style={{ color: 'var(--text-light)' }}>No orders yet. <Link to="/shop" style={{ color: 'var(--pink)' }}>Start shopping</Link></p>
+                  ) : orders.slice(0, 3).map(order => (
                     <div key={order.id} className="order-item">
                       <img src={order.img} alt={order.name} className="order-img" />
                       <div className="order-info">
@@ -184,7 +208,11 @@ export default function Account() {
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/></svg>
                   All Orders
                 </div>
-                {mockOrders.map(order => (
+                {ordersLoading ? (
+                  <p style={{ color: 'var(--text-light)' }}>Loading orders...</p>
+                ) : orders.length === 0 ? (
+                  <p style={{ color: 'var(--text-light)' }}>No orders yet.</p>
+                ) : orders.map(order => (
                   <div key={order.id} className="order-item">
                     <img src={order.img} alt={order.name} className="order-img" />
                     <div className="order-info">
