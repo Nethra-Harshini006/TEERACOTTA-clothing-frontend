@@ -636,6 +636,29 @@ const products = [
     price: 1299, originalPrice: 1799, rating: 4.4, badge: "New",
     description: "Slim genuine leather card holder with 6 card slots.",
   },
+  {
+  id: 61,
+  name: "Elegant Black Mini Dress",
+  category: "Women",
+  subCategory: "Dresses",
+
+  image: "/images/blackdress.jpg",
+
+  images: [
+    "/images/blackdress.jpg",
+    "/images/blackdress.jpg",
+    "/images/blackdress.jpg",
+    "/images/blackdress.jpg"
+  ],
+
+  price: 4599,
+  originalPrice: 5999,
+  rating: 4.8,
+  badge: "New",
+
+  description:
+    "Elegant sleeveless black mini dress with a modern slim-fit silhouette. Perfect for parties, dinners, and evening occasions. Crafted with premium soft fabric for a luxurious feel and stylish appearance.",
+}
 ];
 
 export default products;

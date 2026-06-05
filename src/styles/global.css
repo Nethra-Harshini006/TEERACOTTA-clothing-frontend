@@ -31,6 +31,19 @@
   --transition-fast: all 0.18s ease;
 }
 
+.dark-theme {
+  --white: #121214;
+  --soft-black: #ffffff;
+  --text-dark: #e4e4eb;
+  --text-mid: #a1a1b5;
+  --text-light: #76768a;
+  --pink-bg: #2d1015;
+  --pink-bg2: #3f151c;
+  --border: #3d282c;
+  --border-light: #2c1c1f;
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.5);
+}
+
 html { scroll-behavior: smooth; }
 
 body {

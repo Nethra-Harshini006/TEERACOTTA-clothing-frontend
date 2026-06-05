@@ -21,6 +21,7 @@ import Contact from './pages/Contact';
 import FeedbackModal from './components/FeedbackModal';
 import './styles/global.css';
 
+
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
   return user ? children : <Navigate to="/login" replace />;
@@ -33,9 +34,19 @@ function AuthRoute({ children }) {
 
 function AppContent() {
   const { user, loading } = useAuth();
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
   const [cart, setCart] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [dataLoading, setDataLoading] = useState(false);
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark-theme');
+    } else {
+      document.documentElement.classList.remove('dark-theme');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
   const skipCartSave = useRef(true);
   const skipWishlistSave = useRef(true);
 
@@ -122,13 +133,26 @@ function AppContent() {
 
   return (
     <>
-      {user && <Navbar cartCount={cartCount} wishlistCount={wishlistCount} />}
+      {user && <Navbar cartCount={cartCount} wishlistCount={wishlistCount} theme={theme} onToggleTheme={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} />}
       <main>
         <Routes>
           <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
           <Route path="/signup" element={<AuthRoute><Signup /></AuthRoute>} />
           <Route path="/" element={<ProtectedRoute><Home onAddToCart={addToCart} onToggleWishlist={toggleWishlist} wishlist={wishlist} /></ProtectedRoute>} />
-          <Route path="/shop" element={<ProtectedRoute><Shop onAddToCart={addToCart} onToggleWishlist={toggleWishlist} wishlist={wishlist} /></ProtectedRoute>} />
+          <Route
+  path="/shop"
+  element={
+    <ProtectedRoute>
+      <Shop
+        cart={cart}
+        onAddToCart={addToCart}
+        onUpdateQty={updateQty}
+        onToggleWishlist={toggleWishlist}
+        wishlist={wishlist}
+      />
+    </ProtectedRoute>
+  }
+/>
           <Route path="/product/:id" element={<ProtectedRoute><ProductDetail onAddToCart={addToCart} onToggleWishlist={toggleWishlist} wishlist={wishlist} /></ProtectedRoute>} />
           <Route path="/cart" element={<ProtectedRoute><Cart cart={cart} onUpdateQty={updateQty} onRemove={removeItem} /></ProtectedRoute>} />
           <Route path="/checkout" element={<ProtectedRoute><Checkout cart={cart} onClearCart={clearCart} /></ProtectedRoute>} />

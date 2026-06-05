@@ -6,7 +6,13 @@ import '../styles/shop.css';
 
 const ALL_CATS = ['All', 'Men', 'Women', 'Sneakers', 'Accessories', 'Luxury'];
 
-export default function Shop({ onAddToCart, onToggleWishlist, wishlist }) {
+export default function Shop({
+  cart,
+  onAddToCart,
+  onUpdateQty,
+  onToggleWishlist,
+  wishlist
+}) {
   const location = useLocation();
   const filterPanelRef = useRef(null);
 
@@ -212,12 +218,14 @@ export default function Shop({ onAddToCart, onToggleWishlist, wishlist }) {
           {filtered.length > 0 ? (
             filtered.map(p => (
               <ProductCard
-                key={p.id}
-                product={p}
-                onAddToCart={onAddToCart}
-                onToggleWishlist={onToggleWishlist}
-                isWishlisted={wishlist?.some(w => w.id === p.id)}
-              />
+  key={p.id}
+  product={p}
+  cart={cart}
+  onAddToCart={onAddToCart}
+  onUpdateQty={onUpdateQty}
+  onToggleWishlist={onToggleWishlist}
+  isWishlisted={wishlist?.some(w => w.id === p.id)}
+/>
             ))
           ) : (
             <div className="no-results">

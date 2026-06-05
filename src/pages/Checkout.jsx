@@ -115,10 +115,48 @@ export default function Checkout({ cart, onClearCart }) {
 
     try {
       const { order } = await ordersAPI.create({
-        items: cart,
-        billing: formData,
-        totals: { subtotal, shipping, tax, total },
-      });
+
+  orderNumber: `ORD-${Date.now()}`,
+
+  customerName: `${formData.firstName} ${formData.lastName}`,
+
+  customerEmail: formData.email,
+
+  paymentMethod:
+    formData.paymentMethod === 'card'
+      ? 'Card'
+      : formData.paymentMethod === 'upi'
+      ? 'UPI'
+      : 'COD',
+
+  paymentStatus:
+    formData.paymentMethod === 'cod'
+      ? 'Pending'
+      : 'Paid',
+
+  status: 'Confirmed',
+
+  items: cart,
+
+  billing: {
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    email: formData.email,
+    phone: formData.phone,
+    address: formData.address,
+    city: formData.city,
+    state: formData.state,
+    pincode: formData.pincode,
+    country: formData.country,
+  },
+
+  totals: {
+    subtotal,
+    shipping,
+    tax,
+    total,
+  },
+});
       await onClearCart();
       navigate('/order-confirmation', { state: { order } });
     } catch (err) {

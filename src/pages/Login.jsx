@@ -76,8 +76,6 @@ export default function Login() {
                 </div>
               </div>
 
-              <a href="#" className="forgot-link">Forgot password?</a>
-
               <button type="submit" className="auth-submit-btn" disabled={loading}>
                 {loading ? <span className="auth-spinner" /> : 'Sign In'}
               </button>

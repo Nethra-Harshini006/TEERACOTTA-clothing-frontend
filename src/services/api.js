@@ -28,6 +28,18 @@ export const authAPI = {
   google: () => request('/auth/google', { method: 'POST' }),
   me: () => request('/auth/me'),
   updateProfile: (body) => request('/auth/profile', { method: 'PATCH', body: JSON.stringify(body) }),
+
+  forgotPassword: (email) =>
+  request('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  }),
+
+resetPassword: (token, password, confirmPassword) =>
+  request(`/auth/reset-password/${token}`, {
+    method: 'POST',
+    body: JSON.stringify({ password, confirmPassword }),
+  }),
 };
 
 export const cartAPI = {

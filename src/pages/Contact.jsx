@@ -61,30 +61,30 @@ export default function Contact() {
 
         {/* Info cards */}
         <div className="contact-info-row">
-          <a href="tel:+919876543210" className="contact-info-card">
+          <a href="tel:+918668068485" className="contact-info-card">
             <div className="contact-info-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/>
               </svg>
             </div>
             <h4>Call Us</h4>
-            <p>+91 98765 43210</p>
-            <span>Mon – Sat, 9 AM – 7 PM</span>
+            <p>+91 86680 68485</p>
+            <span>24/7 service</span>
           </a>
 
-          <a href="mailto:hello@terracotta.in" className="contact-info-card">
+          <a href="mailto:nethrasudharsan006@gmail.com" className="contact-info-card">
             <div className="contact-info-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
               </svg>
             </div>
             <h4>Email Us</h4>
-            <p>hello@terracotta.in</p>
-            <span>Reply within 4 hours</span>
+            <p>nethrasudharsan006@gmail.com</p>
+            <span>Reply within 2 business days</span>
           </a>
 
           <a
-            href="https://maps.google.com/?q=42+Avinashi+Road+RS+Puram+Coimbatore"
+            href="https://share.google/N7uDquUGHxYUpb75S"
             target="_blank"
             rel="noopener noreferrer"
             className="contact-info-card"
@@ -95,12 +95,14 @@ export default function Contact() {
               </svg>
             </div>
             <h4>Visit Us</h4>
-            <p>42, Avinashi Road, RS Puram</p>
-            <span>Coimbatore, TN — 641002</span>
+            <p> TERRACOTTA,
+                 KOVAIPUDUR, COIMBATORE
+            </p>
+            <span>Coimbatore, TN — 641042</span>
           </a>
 
           <a
-            href="https://wa.me/919876543210"
+            href="https://wa.me/918668068485"
             target="_blank"
             rel="noopener noreferrer"
             className="contact-info-card contact-whatsapp"
@@ -111,7 +113,7 @@ export default function Contact() {
               </svg>
             </div>
             <h4>WhatsApp</h4>
-            <p>+91 98765 43210</p>
+            <p>+91 86680 68485</p>
             <span>Chat with us instantly</span>
           </a>
         </div>
@@ -149,7 +151,7 @@ export default function Contact() {
                   <div className="contact-form-row">
                     <div className="contact-field">
                       <label>Phone <span>(optional)</span></label>
-                      <input name="phone" type="tel" placeholder="+91 98765 43210" value={form.phone} onChange={handleChange} />
+                      <input name="phone" type="tel" placeholder="+91987654321" value={form.phone} onChange={handleChange} />
                     </div>
                     <div className="contact-field">
                       <label>Topic *</label>
@@ -183,16 +185,19 @@ export default function Contact() {
           <div className="contact-map-card">
             <div className="contact-map-header">
               <h3>Find Our Store</h3>
-              <p>42, Avinashi Road, RS Puram, Coimbatore — 641002</p>
+              <p>TERRACOTTA, KOVAIPUDUR, COIMBATORE</p>
             </div>
             <div className="contact-map-embed">
               <iframe
-                title="TERRACOTTA Store Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.478!2d76.9558!3d11.0168!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDAxJzAwLjUiTiA3NsKwNTcnMjEuMCJF!5e0!3m2!1sen!2sin!4v1"
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
+  title="TERRACOTTA Store Location"
+  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7834.36421881777!2d76.92871339999999!3d10.9496124!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba85b62616feb5f%3A0x8c6186eabf388753!2sDennis%20Hypermarket!5e0!3m2!1sen!2sin!4v1780548080167!5m2!1sen!2sin"
+  width="100%"
+  height="100%"
+  style={{ border: 0 }}
+  allowFullScreen=""
+  loading="lazy"
+  referrerPolicy="no-referrer-when-downgrade"
+/>
             </div>
             <div className="contact-map-hours">
               <h4>Store Hours</h4>
