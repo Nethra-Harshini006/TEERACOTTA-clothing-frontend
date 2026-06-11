@@ -49,14 +49,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const signInWithDemo = async () => {
-    try {
-      const data = await authAPI.demo();
-      return handleAuthSuccess(data);
-    } catch (err) {
-      return { ok: false, error: err.message };
-    }
-  };
 
   const signInWithGoogle = async () => {
     try {
@@ -83,7 +75,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signup, login, signInWithDemo, signInWithGoogle, logout, updateProfile }}>
+    <AuthContext.Provider value={{ user, loading, signup, login, signInWithGoogle, logout, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

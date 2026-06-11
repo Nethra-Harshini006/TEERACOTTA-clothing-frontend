@@ -5,7 +5,7 @@ import '../styles/login.css';
 import '../styles/signup.css';
 
 export default function Signup() {
-  const { signup, signInWithDemo, signInWithGoogle } = useAuth();
+  const { signup, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -14,7 +14,7 @@ export default function Signup() {
     email: '',
     password: '',
     confirm: '',
-    age: '',
+    dateOfBirth: '',
     terms: false,
   });
 
@@ -51,17 +51,6 @@ export default function Signup() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!form.age) {
-      setError('Please enter your age.');
-      return;
-    }
-
-    const age = parseInt(form.age, 10);
-
-    if (isNaN(age) || age < 18 || age > 120) {
-      setError('Age must be between 18 and 120 years.');
-      return;
-    }
 
     if (form.password !== form.confirm) {
       setError('Passwords do not match.');
@@ -77,20 +66,18 @@ export default function Signup() {
       setError('Please accept the terms and conditions.');
       return;
     }
+runAuthAction(() =>
+  signup({
+    firstName: form.firstName,
+    lastName: form.lastName,
+    email: form.email,
+    password: form.password,
+    dateOfBirth: form.dateOfBirth,
+  })
+);
+};
 
-    runAuthAction(() =>
-      signup({
-        firstName: form.firstName,
-        lastName: form.lastName,
-        email: form.email,
-        password: form.password,
-        age: form.age,
-      })
-    );
-  };
-
-  const handleDemoLogin = () => runAuthAction(signInWithDemo);
-  const handleGoogleSignUp = () => runAuthAction(signInWithGoogle);
+const handleGoogleSignUp = () => runAuthAction(signInWithGoogle);
 
   return (
     <div className="auth-page">
@@ -193,29 +180,23 @@ export default function Signup() {
                 </div>
               </div>
 
-              <div className="form-group">
-                <label
-                  className="form-label"
-                  htmlFor="age"
-                >
-                  Age
-                </label>
+            <div className="form-group">
+  <label className="form-label" htmlFor="dateOfBirth">
+    Date of Birth
+  </label>
 
-                <div className="form-input-wrap">
-                  <input
-                    id="age"
-                    name="age"
-                    type="number"
-                    className="form-input"
-                    placeholder="18"
-                    min="18"
-                    max="120"
-                    value={form.age}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
+  <div className="form-input-wrap">
+    <input
+      id="dateOfBirth"
+      name="dateOfBirth"
+      type="date"
+      className="form-input"
+      value={form.dateOfBirth}
+      onChange={handleChange}
+      required
+    />
+  </div>
+</div>
 
               <div className="form-group">
                 <label
@@ -319,25 +300,6 @@ export default function Signup() {
                 )}
               </button>
             </form>
-
-            <div className="demo-login-section">
-              <p className="demo-text">
-                Want to try without creating an account?
-              </p>
-
-              <button
-                type="button"
-                onClick={handleDemoLogin}
-                className="demo-btn"
-                disabled={loading}
-              >
-                {loading ? (
-                  <span className="auth-spinner" />
-                ) : (
-                  '🚀 Try Demo Account'
-                )}
-              </button>
-            </div>
 
             <div className="auth-divider">
               or sign up with

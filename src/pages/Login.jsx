@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import '../styles/login.css';
 
 export default function Login() {
-  const { login, signInWithDemo, signInWithGoogle } = useAuth();
+  const { login, signInWithGoogle } = useAuth();
   const navigate  = useNavigate();
   const [form, setForm]     = useState({ email: '', password: '' });
   const [error, setError]   = useState('');
@@ -27,7 +27,7 @@ export default function Login() {
     runAuthAction(() => login({ email: form.email, password: form.password }));
   };
 
-  const handleDemoLogin = () => runAuthAction(signInWithDemo);
+  
   const handleGoogleLogin = () => runAuthAction(signInWithGoogle);
 
   return (
@@ -75,19 +75,18 @@ export default function Login() {
                   </button>
                 </div>
               </div>
+              <div style={{ textAlign: 'right', marginBottom: '15px' }}>
+  <Link to="/forgot-password" className="forgot-password-link">
+    Forgot Password?
+  </Link>
+</div>
 
               <button type="submit" className="auth-submit-btn" disabled={loading}>
                 {loading ? <span className="auth-spinner" /> : 'Sign In'}
               </button>
             </form>
 
-            <div className="demo-login-section">
-              <p className="demo-text">Want to try without creating an account?</p>
-              <button type="button" onClick={handleDemoLogin} className="demo-btn" disabled={loading}>
-                {loading ? <span className="auth-spinner" /> : '🚀 Try Demo Account'}
-              </button>
-            </div>
-
+          
             <div className="auth-divider">or continue with</div>
             <button type="button" className="google-btn" onClick={handleGoogleLogin} disabled={loading}>
               <svg className="google-icon" viewBox="0 0 24 24">

@@ -55,10 +55,6 @@ export const authAPI = {
       body: JSON.stringify(body),
     }),
 
-  demo: () =>
-    request('/auth/demo', {
-      method: 'POST',
-    }),
 
   google: () =>
     request('/auth/google', {
@@ -74,11 +70,11 @@ export const authAPI = {
       body: JSON.stringify(body),
     }),
 
-  forgotPassword: (email) =>
-    request('/auth/forgot-password', {
-      method: 'POST',
-      body: JSON.stringify({ email }),
-    }),
+  forgotPassword: (body) =>
+  request('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  }),
 
   resetPassword: (token, password, confirmPassword) =>
     request(`/auth/reset-password/${token}`, {

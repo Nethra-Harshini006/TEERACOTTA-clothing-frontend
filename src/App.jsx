@@ -13,6 +13,7 @@ import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
 import Wishlist from './pages/Wishlist';
 import Account from './pages/Account';
 import About from './pages/About';
@@ -138,6 +139,17 @@ function AppContent() {
         <Routes>
           <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
           <Route path="/signup" element={<AuthRoute><Signup /></AuthRoute>} />
+          <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
+<Route path="/signup" element={<AuthRoute><Signup /></AuthRoute>} />
+
+<Route
+  path="/forgot-password"
+  element={
+    <AuthRoute>
+      <ForgotPassword />
+    </AuthRoute>
+  }
+/>
           <Route path="/" element={<ProtectedRoute><Home onAddToCart={addToCart} onToggleWishlist={toggleWishlist} wishlist={wishlist} /></ProtectedRoute>} />
           <Route
   path="/shop"
