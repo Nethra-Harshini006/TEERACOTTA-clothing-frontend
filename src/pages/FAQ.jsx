@@ -118,18 +118,18 @@ export default function FAQ() {
           <h3>Still have questions?</h3>
           <p>Our support team is available Monday – Saturday, 9 AM – 7 PM IST.</p>
           <div className="faq-help-cards">
-            <a href="tel:+919876543210" className="faq-help-card">
+            <a href="tel:+918668068485" className="faq-help-card">
               <span className="faq-help-icon">📞</span>
               <div>
                 <strong>Call Us</strong>
-                <span>+91 98765 43210</span>
+                <span>+91 86680 68485</span>
               </div>
             </a>
-            <a href="mailto:hello@terracotta.in" className="faq-help-card">
+            <a href="mailto:nethrasudharsan006@gmail.com" className="faq-help-card">
               <span className="faq-help-icon">✉️</span>
               <div>
                 <strong>Email Us</strong>
-                <span>hello@terracotta.in</span>
+                <span>nethrasudharsan006@gmail.com</span>
               </div>
             </a>
             <Link to="/contact" className="faq-help-card">

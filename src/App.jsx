@@ -88,14 +88,22 @@ function AppContent() {
   }, [wishlist, user]);
 
   const addToCart = (product) => {
-    setCart(prev => {
-      const existing = prev.find(i => i.id === product.id);
-      if (existing) {
-        return prev.map(i => i.id === product.id ? { ...i, qty: i.qty + 1 } : i);
-      }
-      return [...prev, { ...product, qty: 1 }];
-    });
-  };
+  const qty = product.qty || 1;
+
+  setCart(prev => {
+    const existing = prev.find(i => i.id === product.id);
+
+    if (existing) {
+      return prev.map(i =>
+        i.id === product.id
+          ? { ...i, qty: i.qty + qty }
+          : i
+      );
+    }
+
+    return [...prev, { ...product, qty }];
+  });
+};
 
   const updateQty = (id, qty) => {
     if (qty < 1) setCart(prev => prev.filter(i => i.id !== id));
@@ -150,7 +158,13 @@ function AppContent() {
     </AuthRoute>
   }
 />
-          <Route path="/" element={<ProtectedRoute><Home onAddToCart={addToCart} onToggleWishlist={toggleWishlist} wishlist={wishlist} /></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute><Home
+  cart={cart}
+  onAddToCart={addToCart}
+  onUpdateQty={updateQty}
+  onToggleWishlist={toggleWishlist}
+  wishlist={wishlist}
+/></ProtectedRoute>} />
           <Route
   path="/shop"
   element={

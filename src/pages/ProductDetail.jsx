@@ -139,12 +139,18 @@ export default function ProductDetail({ onAddToCart, onToggleWishlist, wishlist 
 
   const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
-  const handleAddToCart = () => {
-    const productToAdd = { ...product, selectedSize, quantity };
-    for (let i = 0; i < quantity; i++) {
-      onAddToCart(productToAdd);
-    }
+ const handleAddToCart = () => {
+  const productToAdd = {
+    ...product,
+    id: product.id || product._id,
+    selectedSize,
+    qty: quantity
   };
+
+  onAddToCart(productToAdd);
+};
+
+
 
   return (
     <div className="product-detail-container">
@@ -247,14 +253,14 @@ export default function ProductDetail({ onAddToCart, onToggleWishlist, wishlist 
             {/* Action Buttons */}
             <div className="product-actions">
               <button 
-                className="btn-add-to-cart"
+                className="add-to-cart-main"
                 onClick={handleAddToCart}
                 disabled={!selectedSize && (product.category === 'Men' || product.category === 'Women')}
               >
                 Add to Cart
               </button>
               <button 
-                className={`btn-wishlist ${isWishlisted ? 'wishlisted' : ''}`}
+                className={`wishlist-btn ${isWishlisted ? 'active' : ''}`}
                 onClick={() => onToggleWishlist(product)}
               >
                 {isWishlisted ? '♥' : '♡'}

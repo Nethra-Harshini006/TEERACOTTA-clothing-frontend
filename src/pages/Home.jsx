@@ -40,7 +40,13 @@ const testimonials = [
   },
 ];
 
-export default function Home({ onAddToCart, onToggleWishlist, wishlist }) {
+export default function Home({
+  cart,
+  onAddToCart,
+  onUpdateQty,
+  onToggleWishlist,
+  wishlist
+}) {
   const { user } = useAuth();
   const [newsletterEmail, setNewsletterEmail] = useState(user?.email || '');
   const [newsletterDone, setNewsletterDone] = useState(false);
@@ -101,8 +107,15 @@ export default function Home({ onAddToCart, onToggleWishlist, wishlist }) {
           </div>
           <div className="products-grid">
             {trending.map(p => (
-              <ProductCard key={p.id} product={p} onAddToCart={onAddToCart}
-                onToggleWishlist={onToggleWishlist} isWishlisted={wishlist?.some(w => w.id === p.id)} />
+             <ProductCard
+  key={p.id}
+  product={p}
+  cart={cart}
+  onAddToCart={onAddToCart}
+  onUpdateQty={onUpdateQty}
+  onToggleWishlist={onToggleWishlist}
+  isWishlisted={wishlist?.some(w => w.id === p.id)}
+/>
             ))}
           </div>
         </div>
@@ -146,8 +159,15 @@ export default function Home({ onAddToCart, onToggleWishlist, wishlist }) {
           </div>
           <div className="products-grid">
             {newArrivals.map(p => (
-              <ProductCard key={p.id} product={p} onAddToCart={onAddToCart}
-                onToggleWishlist={onToggleWishlist} isWishlisted={wishlist?.some(w => w.id === p.id)} />
+              <ProductCard
+  key={p.id}
+  product={p}
+  cart={cart}
+  onAddToCart={onAddToCart}
+  onUpdateQty={onUpdateQty}
+  onToggleWishlist={onToggleWishlist}
+  isWishlisted={wishlist?.some(w => w.id === p.id)}
+/>
             ))}
           </div>
         </div>
